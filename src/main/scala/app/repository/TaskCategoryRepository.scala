@@ -11,7 +11,7 @@ import app.model.*
 
 class TaskCategoryRepository(using DBTransactor[IO]) extends DoobieRepository[IO], DoobieQueryHelper, CustomMapping:
 
-  override val database = DatabaseConfig("lepus.app.template://edu_todo")
+  override def database = DatabaseConfig("lepus.app.template://master/edu_todo")
   override val table = "todo_task_category"
 
   def get(id: Long): IO[Option[TaskCategory]] = Action.transact {
@@ -23,11 +23,11 @@ class TaskCategoryRepository(using DBTransactor[IO]) extends DoobieRepository[IO
   }
 
   def filterByTaskIds(taskIds: Seq[Long]): IO[Seq[TaskCategory]] = Action.transact {
-    select[TaskCategory].where(fr"task_id IN(${taskIds.mkString(",")})").query[TaskCategory].to[Seq]
+    select[TaskCategory](SNAKE).where(fr"task_id IN(${taskIds.mkString(",")})").query[TaskCategory].to[Seq]
   }
 
   def filterByCategoryId(categoryId: Long): IO[Seq[TaskCategory]] = Action.transact {
-    select[TaskCategory].where(fr"category_id = $categoryId").query[TaskCategory].to[Seq]
+    select[TaskCategory](SNAKE).where(fr"category_id = $categoryId").query[TaskCategory].to[Seq]
   }
 
   def add(data: TaskCategory): IO[Long] = Action.transact {
@@ -37,7 +37,7 @@ class TaskCategoryRepository(using DBTransactor[IO]) extends DoobieRepository[IO
   }
 
   def update(data: TaskCategory): IO[Int] = Action.transact {
-    insert[TaskCategory](data)
+    insert[TaskCategory](data, SNAKE)
   }
 
   def deleteByTaskId(taskId: Long): IO[Int] = Action.transact {

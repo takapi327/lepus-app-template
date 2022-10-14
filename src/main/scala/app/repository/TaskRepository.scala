@@ -11,7 +11,7 @@ import app.model.Task
 
 class TaskRepository(using DBTransactor[IO]) extends DoobieRepository[IO], DoobieQueryHelper, CustomMapping:
 
-  override val database = DatabaseConfig("lepus.app.template://edu_todo")
+  override def database = DatabaseConfig("lepus.app.template://master/edu_todo")
   override val table = "todo_task"
 
   def findAll(): IO[List[Task]] = Action.transact {
