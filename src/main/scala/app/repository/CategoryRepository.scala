@@ -22,7 +22,7 @@ class CategoryRepository(using DBTransactor[IO]) extends DoobieRepository[IO], D
     select[Category].where(fr"id = $id").query[Category].option
   }
 
-  def filterByIds(ids: Seq[Category]): IO[Seq[Category]] = Action.transact {
+  def filterByIds(ids: Seq[Long]): IO[Seq[Category]] = Action.transact {
     select[Category].where(fr"id IN(${ids.mkString(",")})")
       .query[Category].to[Seq]
   }
