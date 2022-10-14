@@ -10,10 +10,7 @@ lazy val commonSettings = Seq(
 
   scalacOptions ++= Seq(
     "-Xfatal-warnings",
-    "-deprecation",
     "-feature",
-    "-unchecked",
-    "-encoding",
     "utf8",
     "-language:existentials",
     "-language:higherKinds",
