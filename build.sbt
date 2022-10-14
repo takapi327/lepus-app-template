@@ -21,4 +21,7 @@ lazy val commonSettings = Seq(
 lazy val root = (project in file("."))
   .settings(name := "lepus-app-template")
   .settings(commonSettings: _*)
+  .settings(libraryDependencies ++= Seq(
+    "org.http4s" %% "http4s-circe" % "0.23.16"
+  ))
   .enablePlugins(Lepus)
