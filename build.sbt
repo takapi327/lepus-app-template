@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
 
     javaOptions ++= Seq("-Dconfig.file=conf/env.dev/application.conf"),
 
-    scalaOptions ++= Seq(
+    scalacOptions ++= Seq(
       "-Xfatal-warnings",
       "-deprecation",
       "-feature",
@@ -22,4 +22,3 @@ lazy val root = (project in file("."))
       "-language:implicitConversions"
     )
   )
-
