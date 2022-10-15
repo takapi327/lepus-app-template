@@ -1,0 +1,13 @@
+version: '3'
+services:
+  mysql:
+    image: mysql/mysql-server:8.0.23
+    platform: linux/amd64
+    container_name: edu-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - 43306:3306
+    volumes:
+      - ./database/mysql_data:/docker-entrypoint-initdb.d
+      - ./database/my.cnf:/etc/mysql/conf.d/my.cnf
