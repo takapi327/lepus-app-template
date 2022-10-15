@@ -21,13 +21,13 @@ val id = bindPath[Long]("id")
 
 object HttpApp extends LepusApp[IO]:
 
-  override val databases = Set(
-    DatabaseConfig("lepus.app.template://master/edu_todo")
-  )
+  val eduTodo = DatabaseConfig("lepus.app.template://master/edu_todo")
 
-  val taskRepository:         Transact[IO, TaskRepository]         = new TaskRepository
-  val categoryRepository:     Transact[IO, CategoryRepository]     = new CategoryRepository
-  val taskCategoryRepository: Transact[IO, TaskCategoryRepository] = new TaskCategoryRepository
+  override val databases = Set(eduTodo)
+
+  val taskRepository:         Transact[IO, TaskRepository]         = TaskRepository(eduTodo)
+  val categoryRepository:     Transact[IO, CategoryRepository]     = CategoryRepository(eduTodo)
+  val taskCategoryRepository: Transact[IO, TaskCategoryRepository] = TaskCategoryRepository(eduTodo)
 
   val taskService: Transact[IO, TaskService] = new TaskService(taskRepository, taskCategoryRepository, categoryRepository)
 
