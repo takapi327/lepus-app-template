@@ -32,7 +32,7 @@ class TaskController(taskService: TaskService):
       taskOpt <- taskService.get(id)
       res     <- taskOpt match
         case Some(task) => Ok(task.asJson)
-        case None       => NotFound(s"$id に一致するTaskが存在しない")
+        case None       => NotFound(s"ID: $id に一致するTaskが存在しない")
     yield res
 
   def put(id: Long, request: Request[IO]): IO[Response[IO]] =

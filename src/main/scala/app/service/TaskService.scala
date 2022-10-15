@@ -54,8 +54,7 @@ class TaskService(
       )) >> IO.pure(task)
     } flatMap { task => updateTaskCategory(task, params) }
 
-  def delete(id: Long): IO[Unit] =
-    taskRepository.delete(id) >> IO.unit
+  def delete(id: Long): IO[Unit] = taskRepository.delete(id) >> IO.unit
 
   private def updateTaskCategory(task: Task, params: JsValuePutTask): EitherT[IO, Throwable, Unit] =
     (params.categoryId match {

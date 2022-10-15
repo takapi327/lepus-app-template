@@ -36,7 +36,9 @@ case class TaskCategoryRepository(database: DatabaseConfig)(using DBTransactor[I
   }
 
   def update(data: TaskCategory): IO[Int] = Action.transact {
-    insert[TaskCategory](data)
+    update.set(fr"task_id=${data.taskId}, category_id=${data.categoryId}")
+      .where(fr"id=${data.id}")
+      .updateRun
   }
 
   def deleteByTaskId(taskId: Long): IO[Int] = Action.transact {

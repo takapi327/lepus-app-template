@@ -33,7 +33,9 @@ case class CategoryRepository(database: DatabaseConfig)(using DBTransactor[IO]) 
   }
 
   def update(data: Category): IO[Int] = Action.transact {
-    insert[Category](data)
+    update.set(fr"name=${data.name}, slug=${data.slug}, color=${data.color}")
+      .where(fr"id=${data.id}")
+      .updateRun
   }
 
   def delete(id: Long): IO[Int] = Action.transact {
