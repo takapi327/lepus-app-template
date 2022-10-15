@@ -23,31 +23,27 @@ class TaskCategoryRepository(using DBTransactor[IO]) extends DoobieRepository[IO
   }
 
   def filterByTaskIds(taskIds: Seq[Long]): IO[Seq[TaskCategory]] = Action.transact {
-    select[TaskCategory](SNAKE).where(fr"task_id IN(${taskIds.mkString(",")})").query[TaskCategory].to[Seq]
+    select[TaskCategory].where(fr"task_id IN(${taskIds.mkString(",")})").query[TaskCategory].to[Seq]
   }
 
   def filterByCategoryId(categoryId: Long): IO[Seq[TaskCategory]] = Action.transact {
-    select[TaskCategory](SNAKE).where(fr"category_id = $categoryId").query[TaskCategory].to[Seq]
+    select[TaskCategory].where(fr"category_id = $categoryId").query[TaskCategory].to[Seq]
   }
 
   def add(data: TaskCategory): IO[Long] = Action.transact {
-    sql"insert into todo_task_category (task_id, category_id) values (${data.taskId}, ${data.categoryId})"
+    insert[TaskCategory].values(fr"${data.taskId}", fr"${data.categoryId}")
       .update
       .withUniqueGeneratedKeys[Long]("id")
   }
 
   def update(data: TaskCategory): IO[Int] = Action.transact {
-    insert[TaskCategory](data, SNAKE)
+    insert[TaskCategory](data)
   }
 
   def deleteByTaskId(taskId: Long): IO[Int] = Action.transact {
-    sql"delete from todo_task_category where task_id = $taskId"
-      .update
-      .run
+    delete.where(fr"task_id = $taskId").updateRun
   }
 
   def deleteByCategoryId(categoryId: Long): IO[Int] = Action.transact {
-    sql"delete from todo_task_category where category_id = $categoryId"
-      .update
-      .run
+    delete.where(fr"category_id = $categoryId").updateRun
   }

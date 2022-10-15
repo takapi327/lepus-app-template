@@ -23,7 +23,7 @@ class TaskRepository(using DBTransactor[IO]) extends DoobieRepository[IO], Doobi
   }
 
   def add(data: Task): IO[Long] = Action.transact {
-    sql"insert into todo_task (title, description, state) values (${data.title}, ${data.description}, ${data.state})"
+    insert[Task].values(fr"${data.title}", fr"${data.description}", fr"${data.state}")
       .update
       .withUniqueGeneratedKeys[Long]("id")
   }
@@ -33,7 +33,5 @@ class TaskRepository(using DBTransactor[IO]) extends DoobieRepository[IO], Doobi
   }
 
   def delete(id: Long): IO[Int] = Action.transact {
-    sql"delete from todo_task where id = $id"
-      .update
-      .run
+    delete.where(fr"id = $id").updateRun
   }

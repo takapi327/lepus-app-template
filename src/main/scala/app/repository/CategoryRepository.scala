@@ -28,7 +28,7 @@ class CategoryRepository(using DBTransactor[IO]) extends DoobieRepository[IO], D
   }
 
   def add(data: Category): IO[Long] = Action.transact {
-    sql"insert into todo_category (name, slug, color) values (${data.name}, ${data.slug}, ${data.color})"
+    insert[Category].values(fr"${data.name}", fr"${data.slug}", fr"${data.color}")
       .update
       .withUniqueGeneratedKeys[Long]("id")
   }
@@ -38,7 +38,5 @@ class CategoryRepository(using DBTransactor[IO]) extends DoobieRepository[IO], D
   }
 
   def delete(id: Long): IO[Int] = Action.transact {
-    sql"delete from todo_category where id = $id"
-      .update
-      .run
+    delete.where(fr"id = $id").updateRun
   }
