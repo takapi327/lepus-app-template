@@ -9,9 +9,8 @@ import lepus.database.{ DatabaseConfig, DoobieRepository, DBTransactor, DoobieQu
 
 import app.model.*
 
-class TaskCategoryRepository(using DBTransactor[IO]) extends DoobieRepository[IO], DoobieQueryHelper, CustomMapping:
+case class TaskCategoryRepository(database: DatabaseConfig)(using DBTransactor[IO]) extends DoobieRepository[IO], DoobieQueryHelper, CustomMapping:
 
-  override def database = DatabaseConfig("lepus.app.template://master/edu_todo")
   override val table = "todo_task_category"
 
   def get(id: Long): IO[Option[TaskCategory]] = Action.transact {

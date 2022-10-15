@@ -9,9 +9,8 @@ import lepus.database.{ DatabaseConfig, DoobieRepository, DBTransactor, DoobieQu
 
 import app.model.Task
 
-class TaskRepository(using DBTransactor[IO]) extends DoobieRepository[IO], DoobieQueryHelper, CustomMapping:
+case class TaskRepository(database: DatabaseConfig)(using DBTransactor[IO]) extends DoobieRepository[IO], DoobieQueryHelper, CustomMapping:
 
-  override def database = DatabaseConfig("lepus.app.template://master/edu_todo")
   override val table = "todo_task"
 
   def findAll(): IO[List[Task]] = Action.transact {
@@ -23,13 +22,15 @@ class TaskRepository(using DBTransactor[IO]) extends DoobieRepository[IO], Doobi
   }
 
   def add(data: Task): IO[Long] = Action.transact {
-    insert[Task].values(fr"${data.title}", fr"${data.description}", fr"${data.state}")
+    insert[Task].values(fr"${data.id}", fr"${data.title}", fr"${data.description}", fr"${data.state}")
       .update
       .withUniqueGeneratedKeys[Long]("id")
   }
 
   def update(data: Task): IO[Int] = Action.transact {
-    insert[Task](data)
+    update.set(fr"title=${data.title}, description=${data.description}, state=${data.state}")
+      .where(fr"id=${data.id}")
+      .updateRun
   }
 
   def delete(id: Long): IO[Int] = Action.transact {
