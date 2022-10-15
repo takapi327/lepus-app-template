@@ -21,9 +21,31 @@ val id = bindPath[Long]("id")
 
 object HttpApp extends LepusApp[IO]:
 
-  val eduTodo = DatabaseConfig("lepus.app.template://master/edu_todo")
+  override val databases = Set(APP.eduTodo)
 
-  override val databases = Set(eduTodo)
+  override def routes = NonEmptyList.of(
+    "tasks" ->> RouterConstructor.of {
+      case GET  => APP.taskController.get
+      case POST => APP.taskController.post(summon[Request[IO]])
+    },
+    "tasks" / id ->> RouterConstructor.of {
+      case GET    => APP.taskController.getById(summon[Long])
+      case PUT    => APP.taskController.put(summon[Long], summon[Request[IO]])
+      case DELETE => APP.taskController.delete(summon[Long])
+    },
+    "categories" ->> RouterConstructor.of {
+      case GET  => APP.categoryController.get
+      case POST => APP.categoryController.post(summon[Request[IO]])
+    },
+    "categories" / id ->> RouterConstructor.of {
+      case PUT    => APP.categoryController.put(summon[Long], summon[Request[IO]])
+      case DELETE => APP.categoryController.delete(summon[Long])
+    }
+  )
+
+object APP:
+
+  val eduTodo: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo")
 
   val categoryRepository: Transact[IO, CategoryRepository] = CategoryRepository(eduTodo)
 
@@ -32,23 +54,3 @@ object HttpApp extends LepusApp[IO]:
 
   val taskController: Transact[IO, TaskController] = new TaskController(taskService)
   val categoryController: Transact[IO, CategoryController] = new CategoryController(categoryService)
-
-  override def routes = NonEmptyList.of(
-    "tasks" ->> RouterConstructor.of {
-      case GET  => taskController.get
-      case POST => taskController.post(summon[Request[IO]])
-    },
-    "tasks" / id ->> RouterConstructor.of {
-      case GET    => taskController.getById(summon[Long])
-      case PUT    => taskController.put(summon[Long], summon[Request[IO]])
-      case DELETE => taskController.delete(summon[Long])
-    },
-    "categories" ->> RouterConstructor.of {
-      case GET  => categoryController.get
-      case POST => categoryController.post(summon[Request[IO]])
-    },
-    "categories" / id ->> RouterConstructor.of {
-      case PUT    => categoryController.put(summon[Long], summon[Request[IO]])
-      case DELETE => categoryController.delete(summon[Long])
-    }
-  )
