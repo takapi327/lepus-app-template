@@ -10,8 +10,8 @@ import app.repository.{ TaskRepository, CategoryRepository, TaskCategoryReposito
 
 class TaskService(
   taskRepository:         TaskRepository,
+  categoryRepository:     CategoryRepository,
   taskCategoryRepository: TaskCategoryRepository,
-  categoryRepository:     CategoryRepository
 ):
 
   def getAll: IO[Seq[JsValueTask]] =
@@ -54,7 +54,7 @@ class TaskService(
       )) >> IO.pure(task)
     } flatMap { task => updateTaskCategory(task, params) }
 
-  def delete(id: Long): IO[Unit] = taskRepository.delete(id) >> IO.unit
+  def delete(id: Long): IO[Int] = taskRepository.delete(id)
 
   private def updateTaskCategory(task: Task, params: JsValuePutTask): EitherT[IO, Throwable, Unit] =
     (params.categoryId match {

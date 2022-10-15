@@ -1,6 +1,6 @@
 package app.model.json
 
-import io.circe.{ Encoder, Decoder }
+import io.circe.Decoder
 import io.circe.generic.semiauto.*
 
 case class JsValuePostTask(

@@ -30,7 +30,7 @@ case class TaskCategoryRepository(database: DatabaseConfig)(using DBTransactor[I
   }
 
   def add(data: TaskCategory): IO[Long] = Action.transact {
-    insert[TaskCategory].values(fr"${data.taskId}", fr"${data.categoryId}")
+    insert[TaskCategory].values(fr"${data.id}", fr"${data.taskId}", fr"${data.categoryId}")
       .update
       .withUniqueGeneratedKeys[Long]("id")
   }

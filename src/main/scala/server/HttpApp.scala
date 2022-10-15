@@ -12,8 +12,8 @@ import lepus.server.LepusApp
 import lepus.database.{ DatabaseConfig, DBTransactor }
 
 import app.repository.{ TaskRepository, CategoryRepository, TaskCategoryRepository }
-import app.service.TaskService
-import app.controller.api.TaskController
+import app.service.{ TaskService, CategoryService }
+import app.controller.api.{ TaskController, CategoryController }
 
 type Transact[F[_], T] = DBTransactor[F] ?=> T
 
@@ -25,13 +25,13 @@ object HttpApp extends LepusApp[IO]:
 
   override val databases = Set(eduTodo)
 
-  val taskRepository:         Transact[IO, TaskRepository]         = TaskRepository(eduTodo)
-  val categoryRepository:     Transact[IO, CategoryRepository]     = CategoryRepository(eduTodo)
-  val taskCategoryRepository: Transact[IO, TaskCategoryRepository] = TaskCategoryRepository(eduTodo)
+  val categoryRepository: Transact[IO, CategoryRepository] = CategoryRepository(eduTodo)
 
-  val taskService: Transact[IO, TaskService] = new TaskService(taskRepository, taskCategoryRepository, categoryRepository)
+  val taskService: Transact[IO, TaskService] = new TaskService(TaskRepository(eduTodo), categoryRepository, TaskCategoryRepository(eduTodo))
+  val categoryService: Transact[IO, CategoryService] = new CategoryService(categoryRepository)
 
   val taskController: Transact[IO, TaskController] = new TaskController(taskService)
+  val categoryController: Transact[IO, CategoryController] = new CategoryController(categoryService)
 
   override def routes = NonEmptyList.of(
     "tasks" ->> RouterConstructor.of {
@@ -44,11 +44,11 @@ object HttpApp extends LepusApp[IO]:
       case DELETE => taskController.delete(summon[Long])
     },
     "categories" ->> RouterConstructor.of {
-      case GET  => ???
-      case POST => ???
+      case GET  => categoryController.get
+      case POST => categoryController.post(summon[Request[IO]])
     },
     "categories" / id ->> RouterConstructor.of {
-      case PUT    => ???
-      case DELETE => ???
+      case PUT    => categoryController.put(summon[Long], summon[Request[IO]])
+      case DELETE => categoryController.delete(summon[Long])
     }
   )
