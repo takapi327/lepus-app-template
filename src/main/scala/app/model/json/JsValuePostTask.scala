@@ -10,7 +10,6 @@ case class JsValuePostTask(
 )
 
 object JsValuePostTask:
-  given Encoder[JsValuePostTask] = deriveEncoder
   given Decoder[JsValuePostTask] = Decoder.instance { d =>
     for
       title       <- d.downField("title").as[String]
