@@ -6,7 +6,7 @@ import cats.data.EitherT
 
 import app.model.Category
 import app.model.json.{ JsValueCategory, JsValuePostCategory, JsValuePutCategory }
-import app.repository.CategoryRepository
+import infrastructure.eduTodo.repository.CategoryRepository
 
 class CategoryService(
   categoryRepository: CategoryRepository

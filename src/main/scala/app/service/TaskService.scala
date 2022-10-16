@@ -6,7 +6,7 @@ import cats.data.EitherT
 
 import app.model.{ Task, Category, TaskCategory }
 import app.model.json.{ JsValueTask, JsValueCategory, JsValuePostTask, JsValuePutTask }
-import app.repository.{ TaskRepository, CategoryRepository, TaskCategoryRepository }
+import infrastructure.eduTodo.repository.{ CategoryRepository, TaskCategoryRepository, TaskRepository }
 
 class TaskService(
   taskRepository:         TaskRepository,
@@ -33,14 +33,13 @@ class TaskService(
       title       = v.title,
       description = v.description,
       state       = v.state,
-      category    = categoryOpt.map(JsValueCategory.build _)
+      category    = categoryOpt.map(JsValueCategory.build)
     ))
 
   def add(task: JsValuePostTask): IO[Long] =
     for
       taskId <- taskRepository.add(Task(None, task.title, task.description))
       _      <- task.categoryId match
-        // めんどくさかった...
         case Some(id) => taskCategoryRepository.add(TaskCategory.create(taskId, id))
         case None     => IO.unit
     yield taskId
