@@ -19,12 +19,12 @@ class TaskController(taskService: TaskService):
       res   <- Ok(tasks.asJson)
     yield res
 
-  def post(request: Request[IO]): IO[Response[IO]] =
+  def post(using request: Request[IO]): IO[Response[IO]] =
     given EntityDecoder[IO, JsValuePostTask] = circeEntityDecoder[IO, JsValuePostTask]
     for
       post <- request.as[JsValuePostTask]
       _    <- taskService.add(post)
-      res  <- Ok("成功")
+      res  <- Ok("Success")
     yield res
 
   def getById(id: Long): IO[Response[IO]] =
@@ -32,15 +32,15 @@ class TaskController(taskService: TaskService):
       taskOpt <- taskService.get(id)
       res     <- taskOpt match
         case Some(task) => Ok(task.asJson)
-        case None       => NotFound(s"ID: $id に一致するTaskが存在しない")
+        case None       => NotFound(s"ID: No Task matching $id exists")
     yield res
 
-  def put(id: Long, request: Request[IO]): IO[Response[IO]] =
+  def put(id: Long)(using request: Request[IO]): IO[Response[IO]] =
     given EntityDecoder[IO, JsValuePutTask] = circeEntityDecoder[IO, JsValuePutTask]
     for
       put <- request.as[JsValuePutTask]
       _   <- taskService.update(id, put).value
-      res <- Ok("成功")
+      res <- Ok("Success")
     yield res
 
-  def delete(id: Long): IO[Response[IO]] = taskService.delete(id) >> Ok("成功")
+  def delete(id: Long): IO[Response[IO]] = taskService.delete(id) >> Ok("Success")
