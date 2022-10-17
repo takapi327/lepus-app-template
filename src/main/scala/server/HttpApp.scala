@@ -9,12 +9,10 @@ import org.http4s.dsl.io.*
 
 import lepus.router.{ *, given }
 import lepus.server.LepusApp
-import lepus.database.{ DatabaseConfig, DBTransactor }
+import lepus.database.{ DatabaseConfig, DBTransactor, Transact }
 
 import app.service.{ TaskService, CategoryService }
 import app.controller.api.{ TaskController, CategoryController }
-
-type Transact[F[_], T] = DBTransactor[F] ?=> T
 
 val id = bindPath[Long]("id")
 
