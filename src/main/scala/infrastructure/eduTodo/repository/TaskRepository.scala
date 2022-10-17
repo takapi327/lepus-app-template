@@ -23,7 +23,7 @@ class TaskRepository(using Transactor[IO]) extends DoobieRepository[IO], DoobieQ
       .withUniqueGeneratedKeys[Long]("id")
 
   def update(data: Task): IO[Int] =
-    update.set(fr"title=${data.title}, description=${data.description}, state=${data.state}")
+    update(fr"title=${data.title}, description=${data.description}, state=${data.state}")
       .where(fr"id=${data.id}")
       .updateRun
 

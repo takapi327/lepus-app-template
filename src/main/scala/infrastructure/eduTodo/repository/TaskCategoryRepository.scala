@@ -29,7 +29,7 @@ class TaskCategoryRepository(using xa: Transactor[IO]) extends DoobieRepository[
       .withUniqueGeneratedKeys[Long]("id")
 
   def update(data: TaskCategory): IO[Int] =
-    update.set(fr"task_id=${data.taskId}, category_id=${data.categoryId}")
+    update(fr"task_id=${data.taskId}, category_id=${data.categoryId}")
       .where(fr"id=${data.id}")
       .updateRun
 
