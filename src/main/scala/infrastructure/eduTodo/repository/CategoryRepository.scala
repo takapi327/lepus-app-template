@@ -1,8 +1,13 @@
 package infrastructure.eduTodo.repository
 
+import cats.data.NonEmptyList
+
 import cats.effect.IO
 
+import doobie.util.fragments.in
+
 import lepus.database.*
+import lepus.database.implicits.*
 import lepus.logger.given
 
 import app.model.Category
@@ -17,8 +22,8 @@ class CategoryRepository(using Transactor[IO]) extends DoobieRepository[IO], Doo
   def get(id: Long): IO[Option[Category]] =
     select[Category].where(fr"id = $id").query.option
 
-  def filterByIds(ids: Seq[Long]): IO[Seq[Category]] =
-    select[Category].where(fr"id IN(${ids.mkString(",")})")
+  def filterByIds(ids: NonEmptyList[Long]): IO[Seq[Category]] =
+    select[Category].where(in(fr"id", ids))
       .query.to[Seq]
 
   def add(data: Category): IO[Long] =

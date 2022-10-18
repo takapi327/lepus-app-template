@@ -1,8 +1,13 @@
 package infrastructure.eduTodo.repository
 
+import cats.data.NonEmptyList
+
 import cats.effect.IO
 
+import doobie.util.fragments.in
+
 import lepus.database.*
+import lepus.database.implicits.*
 import lepus.logger.given
 
 import app.model.*
@@ -17,8 +22,8 @@ class TaskCategoryRepository(using xa: Transactor[IO]) extends DoobieRepository[
   def findByTaskId(taskId: Long): IO[Option[TaskCategory]] =
     select[TaskCategory].where(fr"task_id = $taskId").query.option
 
-  def filterByTaskIds(taskIds: Seq[Long]): IO[Seq[TaskCategory]] =
-    select[TaskCategory].where(fr"task_id IN(${taskIds.mkString(",")})").query.to[Seq]
+  def filterByTaskIds(taskIds: NonEmptyList[Long]): IO[List[TaskCategory]] =
+    select[TaskCategory].where(in(fr"task_id", taskIds)).query.to[List]
 
   def filterByCategoryId(categoryId: Long): IO[Seq[TaskCategory]] =
     select[TaskCategory].where(fr"category_id = $categoryId").query.to[Seq]

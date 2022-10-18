@@ -2,7 +2,7 @@ package app.service
 
 import cats.effect.IO
 
-import cats.data.EitherT
+import cats.data.{ EitherT, NonEmptyList }
 
 import app.model.{ Task, Category, TaskCategory }
 import app.model.json.{ JsValueTask, JsValueCategory, JsValuePostTask, JsValuePutTask }
@@ -17,8 +17,8 @@ class TaskService(
   def getAll: IO[Seq[JsValueTask]] =
     for
       taskSeq         <- taskRepository.findAll()
-      taskCategorySeq <- taskCategoryRepository.filterByTaskIds(taskSeq.map(_.id.get))
-      categorySeq     <- categoryRepository.filterByIds(taskCategorySeq.map(_.categoryId))
+      taskCategorySeq <- taskCategoryRepository.filterByTaskIds(NonEmptyList.fromListUnsafe(taskSeq.flatMap(_.id)))
+      categorySeq     <- categoryRepository.filterByIds(NonEmptyList.fromListUnsafe(taskCategorySeq.map(_.categoryId)))
     yield JsValueTask.buildMulti(taskSeq, taskCategorySeq, categorySeq)
 
   def get(id: Long): IO[Option[JsValueTask]] =
