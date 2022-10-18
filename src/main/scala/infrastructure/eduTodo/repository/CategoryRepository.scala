@@ -12,14 +12,14 @@ class CategoryRepository(using Transactor[IO]) extends DoobieRepository[IO], Doo
   override val table = "todo_category"
 
   def findAll(): IO[List[Category]] =
-    select[Category].query[Category].to[List]
+    select[Category].query.to[List]
 
   def get(id: Long): IO[Option[Category]] =
-    select[Category].where(fr"id = $id").query[Category].option
+    select[Category].where(fr"id = $id").query.option
 
   def filterByIds(ids: Seq[Long]): IO[Seq[Category]] =
     select[Category].where(fr"id IN(${ids.mkString(",")})")
-      .query[Category].to[Seq]
+      .query.to[Seq]
 
   def add(data: Category): IO[Long] =
     insert[Category].values(fr"${data.id}, ${data.name}, ${data.slug}, ${data.color.toHexString}")
@@ -27,9 +27,9 @@ class CategoryRepository(using Transactor[IO]) extends DoobieRepository[IO], Doo
       .withUniqueGeneratedKeys[Long]("id")
 
   def update(data: Category): IO[Int] =
-    update(fr"name=${data.name}, slug=${data.slug}, color=${data.color.toHexString}")
+    update[Category](fr"name=${data.name}, slug=${data.slug}, color=${data.color.toHexString}")
       .where(fr"id=${data.id}")
       .updateRun
 
   def delete(id: Long): IO[Int] =
-    delete.where(fr"id = $id").updateRun
+    delete[Category].where(fr"id = $id").updateRun
