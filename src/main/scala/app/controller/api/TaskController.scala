@@ -27,7 +27,7 @@ class TaskController(taskService: TaskService):
       res  <- Ok("Success")
     yield res
 
-  def getById(id: Long): IO[Response[IO]] =
+  def getById(using id: Long): IO[Response[IO]] =
     for
       taskOpt <- taskService.get(id)
       res     <- taskOpt match
@@ -35,7 +35,7 @@ class TaskController(taskService: TaskService):
         case None       => NotFound(s"ID: No Task matching $id exists")
     yield res
 
-  def put(id: Long)(using request: Request[IO]): IO[Response[IO]] =
+  def put(using id: Long)(using request: Request[IO]): IO[Response[IO]] =
     given EntityDecoder[IO, JsValuePutTask] = circeEntityDecoder[IO, JsValuePutTask]
     for
       put <- request.as[JsValuePutTask]
@@ -43,4 +43,4 @@ class TaskController(taskService: TaskService):
       res <- Ok("Success")
     yield res
 
-  def delete(id: Long): IO[Response[IO]] = taskService.delete(id) >> Ok("Success")
+  def delete(using id: Long): IO[Response[IO]] = taskService.delete(id) >> Ok("Success")

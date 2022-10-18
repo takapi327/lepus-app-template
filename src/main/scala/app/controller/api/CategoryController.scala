@@ -28,7 +28,7 @@ class CategoryController(categoryService: CategoryService):
       res  <- Ok("Success")
     yield res
 
-  def put(id: Long)(using request: Request[IO]): IO[Response[IO]] =
+  def put(using id: Long)(using request: Request[IO]): IO[Response[IO]] =
     given EntityDecoder[IO, JsValuePutCategory] = circeEntityDecoder[IO, JsValuePutCategory]
     for
       put  <- request.as[JsValuePutCategory]
@@ -36,4 +36,4 @@ class CategoryController(categoryService: CategoryService):
       res  <- Ok("Success")
     yield res
 
-  def delete(id: Long): IO[Response[IO]] = categoryService.delete(id) >> Ok("Success")
+  def delete(using id: Long): IO[Response[IO]] = categoryService.delete(id) >> Ok("Success")

@@ -37,16 +37,16 @@ object HttpApp extends LepusApp[IO]:
       case POST => taskController.post
     },
     "tasks" / id ->> RouterConstructor.of {
-      case GET    => taskController.getById(summon[Long])
-      case PUT    => taskController.put(summon[Long])
-      case DELETE => taskController.delete(summon[Long])
+      case GET    => taskController.getById
+      case PUT    => taskController.put
+      case DELETE => taskController.delete
     },
     "categories" ->> RouterConstructor.of {
       case GET  => categoryController.get
       case POST => categoryController.post
     },
     "categories" / id ->> RouterConstructor.of {
-      case PUT    => categoryController.put(summon[Long])
-      case DELETE => categoryController.delete(summon[Long])
+      case PUT    => categoryController.put
+      case DELETE => categoryController.delete
     }
   )
