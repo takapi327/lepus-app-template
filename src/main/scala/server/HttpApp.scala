@@ -9,8 +9,9 @@ import org.http4s.dsl.io.*
 
 import lepus.router.{ *, given }
 import lepus.server.LepusApp
-import lepus.database.{ DatabaseConfig, DBTransactor, Transact }
+import lepus.database.Transact
 
+import infrastructure.databases.eduTodo
 import app.service.{ TaskService, CategoryService }
 import app.controller.api.{ TaskController, CategoryController }
 
@@ -18,12 +19,7 @@ val id = bindPath[Long]("id")
 
 object HttpApp extends LepusApp[IO]:
 
-  val db: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo")
-
-  val eduTodo: Transact[IO, infrastructure.eduTodo.EduTodo] =
-    infrastructure.eduTodo.EduTodo(db)
-
-  override val databases = Set(db)
+  override val databases = Set(eduTodo.db)
 
   val taskService: Transact[IO, TaskService] = TaskService(eduTodo.taskRepository, eduTodo.categoryRepository, eduTodo.taskCategoryRepository)
   val categoryService: Transact[IO, CategoryService] = CategoryService(eduTodo.categoryRepository)
