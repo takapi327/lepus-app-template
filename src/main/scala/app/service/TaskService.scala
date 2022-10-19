@@ -17,8 +17,12 @@ class TaskService(
   def getAll: IO[Seq[JsValueTask]] =
     for
       taskSeq         <- taskRepository.findAll()
-      taskCategorySeq <- taskCategoryRepository.filterByTaskIds(NonEmptyList.fromListUnsafe(taskSeq.flatMap(_.id)))
-      categorySeq     <- categoryRepository.filterByIds(NonEmptyList.fromListUnsafe(taskCategorySeq.map(_.categoryId)))
+      taskCategorySeq <- NonEmptyList.fromList(taskSeq.flatMap(_.id)) match
+        case Some(list) => taskCategoryRepository.filterByTaskIds(list)
+        case None       => IO.pure(List.empty)
+      categorySeq     <- NonEmptyList.fromList(taskCategorySeq.map(_.categoryId)) match
+        case Some(list) => categoryRepository.filterByIds(list)
+        case None       => IO.pure(List.empty)
     yield JsValueTask.buildMulti(taskSeq, taskCategorySeq, categorySeq)
 
   def get(id: Long): IO[Option[JsValueTask]] =
