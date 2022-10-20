@@ -13,9 +13,8 @@ case class EduTodo(database: DatabaseConfig)(using DBTransactor[IO]) extends Dat
 object EduTodo:
   val db: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo", Seq("master", "slave"))
 
-  val value: Transact[IO, infrastructure.eduTodo.EduTodo] =
-    infrastructure.eduTodo.EduTodo(db)
+  given Transact[IO, EduTodo] = EduTodo(db)
 
-  val taskRepository:         Transact[IO, TaskRepository]         = TaskRepository(value)
-  val categoryRepository:     Transact[IO, CategoryRepository]     = CategoryRepository(value)
-  val taskCategoryRepository: Transact[IO, TaskCategoryRepository] = TaskCategoryRepository(value)
+  val taskRepository:         Transact[IO, TaskRepository]         = TaskRepository()
+  val categoryRepository:     Transact[IO, CategoryRepository]     = CategoryRepository()
+  val taskCategoryRepository: Transact[IO, TaskCategoryRepository] = TaskCategoryRepository()

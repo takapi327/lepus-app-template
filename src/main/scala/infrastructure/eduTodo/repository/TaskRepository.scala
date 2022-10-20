@@ -10,7 +10,7 @@ import app.model.Task
 
 import infrastructure.eduTodo.EduTodo
 
-case class TaskRepository(database: EduTodo) extends DoobieRepository[IO, EduTodo](database), DoobieQueryHelper, CustomMapping:
+case class TaskRepository()(using EduTodo) extends DoobieRepository[IO, EduTodo], DoobieQueryHelper, CustomMapping:
 
   override val table = "todo_task"
 
