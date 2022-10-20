@@ -1,4 +1,4 @@
-package app.controller.api
+package presentation.controller.api
 
 import cats.effect.IO
 
@@ -8,9 +8,8 @@ import org.http4s.*
 import org.http4s.dsl.io.*
 import org.http4s.circe.*
 import org.http4s.circe.CirceEntityDecoder.*
-
-import app.model.json.{ JsValuePostTask, JsValuePutTask }
-import app.service.TaskService
+import application.service.TaskService
+import presentation.model.{JsValuePostTask, JsValuePutTask}
 
 class TaskController(taskService: TaskService):
   def get: IO[Response[IO]] =

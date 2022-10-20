@@ -1,10 +1,10 @@
-package app
+package presentation
 
 import cats.effect.IO
 
 import lepus.database.Transact
 
-import app.service.*
+import application.service.*
 
 package object controller:
   val taskController: Transact[IO, api.TaskController] = api.TaskController(taskService)

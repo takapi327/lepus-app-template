@@ -1,4 +1,4 @@
-package app.model
+package infrastructure.eduTodo.model
 
 import lepus.core.generic.Schema
 import lepus.core.generic.semiauto.*

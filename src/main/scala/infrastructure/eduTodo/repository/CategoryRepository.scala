@@ -10,9 +10,8 @@ import lepus.database.*
 import lepus.database.implicits.*
 import lepus.logger.given
 
-import app.model.Category
-
 import infrastructure.eduTodo.EduTodo
+import infrastructure.eduTodo.model.Category
 
 case class CategoryRepository()(using EduTodo) extends DoobieRepository[IO, EduTodo], DoobieQueryHelper, CustomMapping:
 

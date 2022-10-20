@@ -1,9 +1,9 @@
-package app.model.json
+package presentation.model
 
 import io.circe.Encoder
 import io.circe.generic.semiauto.*
 
-import app.model.Category
+import infrastructure.eduTodo.model.Category
 
 case class JsValueCategory(
   id:    Option[Long],

@@ -1,9 +1,9 @@
-package app.model
+package infrastructure.eduTodo.model
+
+import lepus.core.generic.semiauto.*
+import lepus.core.generic.{Schema, SchemaType}
 
 import java.awt.Color as JavaColor
-
-import lepus.core.generic.{ Schema, SchemaType }
-import lepus.core.generic.semiauto.*
 
 case class Category(
   id:        Option[Long]    = None,

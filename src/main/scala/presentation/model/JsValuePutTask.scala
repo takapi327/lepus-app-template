@@ -1,9 +1,9 @@
-package app.model.json
+package presentation.model
 
 import io.circe.generic.semiauto.*
-import io.circe.{ Decoder, Encoder }
+import io.circe.Decoder
 
-import app.model.Task
+import infrastructure.eduTodo.model.Task
 
 case class JsValuePutTask(
   title:       String,

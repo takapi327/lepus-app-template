@@ -1,12 +1,11 @@
-package app.service
+package application.service
 
 import cats.effect.IO
 
 import cats.data.EitherT
-
-import app.model.Category
-import app.model.json.{ JsValueCategory, JsValuePostCategory, JsValuePutCategory }
+import infrastructure.eduTodo.model.Category
 import infrastructure.eduTodo.repository.CategoryRepository
+import presentation.model.{JsValueCategory, JsValuePostCategory, JsValuePutCategory}
 
 class CategoryService(
   categoryRepository: CategoryRepository
