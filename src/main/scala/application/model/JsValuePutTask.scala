@@ -1,7 +1,7 @@
-package presentation.model
+package application.model
 
-import io.circe.generic.semiauto.*
 import io.circe.Decoder
+import io.circe.generic.semiauto.*
 
 import infrastructure.eduTodo.model.Task
 

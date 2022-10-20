@@ -1,5 +1,6 @@
 package presentation.controller.api
 
+import application.model.{JsValueCategory, JsValuePostCategory, JsValuePutCategory}
 import cats.effect.IO
 
 import io.circe.syntax.*
@@ -9,7 +10,6 @@ import org.http4s.dsl.io.*
 import org.http4s.circe.*
 import org.http4s.circe.CirceEntityDecoder.*
 import application.service.CategoryService
-import presentation.model.{JsValueCategory, JsValuePostCategory, JsValuePutCategory}
 
 class CategoryController(categoryService: CategoryService):
 

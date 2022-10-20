@@ -1,9 +1,9 @@
-package presentation.model
+package application.model
 
 import io.circe.Encoder
 import io.circe.generic.semiauto.*
 
-import infrastructure.eduTodo.model.{ Category, Task, TaskCategory }
+import infrastructure.eduTodo.model.{Category, Task, TaskCategory}
 
 case class JsValueTask(
   id:          Option[Long],

@@ -1,4 +1,4 @@
-package presentation.model
+package application.model
 
 import io.circe.Encoder
 import io.circe.generic.semiauto.*

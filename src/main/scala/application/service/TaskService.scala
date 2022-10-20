@@ -1,11 +1,11 @@
 package application.service
 
+import application.model.{JsValueCategory, JsValuePostTask, JsValuePutTask, JsValueTask}
 import cats.effect.IO
 
 import cats.data.{ EitherT, NonEmptyList }
 import infrastructure.eduTodo.model.{Category, Task, TaskCategory}
 import infrastructure.eduTodo.repository.{ CategoryRepository, TaskCategoryRepository, TaskRepository }
-import presentation.model.{JsValueCategory, JsValuePostTask, JsValuePutTask, JsValueTask}
 
 class TaskService(
   taskRepository:         TaskRepository,
