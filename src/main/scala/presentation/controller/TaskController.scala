@@ -1,15 +1,13 @@
-package presentation.controller.api
+package presentation.controller
 
 import application.model.{JsValuePostTask, JsValuePutTask}
+import application.service.TaskService
 import cats.effect.IO
-
 import io.circe.syntax.*
-
 import org.http4s.*
-import org.http4s.dsl.io.*
 import org.http4s.circe.*
 import org.http4s.circe.CirceEntityDecoder.*
-import application.service.TaskService
+import org.http4s.dsl.io.*
 
 class TaskController(taskService: TaskService):
   def get: IO[Response[IO]] =
