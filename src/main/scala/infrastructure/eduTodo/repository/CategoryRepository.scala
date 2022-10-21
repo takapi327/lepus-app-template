@@ -17,31 +17,31 @@ case class CategoryRepository()(using EduTodo) extends DoobieRepository[IO, EduT
 
   override val table = "todo_category"
 
-  def findAll(): IO[List[Category]] = RunDB.use("slave") {
+  def findAll(): IO[List[Category]] = RunDB("slave") {
     select[Category].query.to[List]
   }
 
-  def get(id: Long): IO[Option[Category]] = RunDB.use("slave") {
+  def get(id: Long): IO[Option[Category]] = RunDB("slave") {
     select[Category].where(fr"id = $id").query.option
   }
 
-  def filterByIds(ids: NonEmptyList[Long]): IO[Seq[Category]] = RunDB.use("slave") {
+  def filterByIds(ids: NonEmptyList[Long]): IO[Seq[Category]] = RunDB("slave") {
     select[Category].where(in(fr"id", ids))
       .query.to[Seq]
   }
 
-  def add(data: Category): IO[Long] = RunDB.use("master") {
+  def add(data: Category): IO[Long] = RunDB("master") {
     insert[Category].values(fr"${data.id}, ${data.name}, ${data.slug}, ${data.color.toHexString}")
       .update
       .withUniqueGeneratedKeys[Long]("id")
   }
 
-  def update(data: Category): IO[Int] = RunDB.use("master") {
+  def update(data: Category): IO[Int] = RunDB("master") {
     update[Category](fr"name=${data.name}, slug=${data.slug}, color=${data.color.toHexString}")
       .where(fr"id=${data.id}")
       .updateRun
   }
 
-  def delete(id: Long): IO[Int] = RunDB.use("master") {
+  def delete(id: Long): IO[Int] = RunDB("master") {
     delete[Category].where(fr"id = $id").updateRun
   }

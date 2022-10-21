@@ -2,6 +2,8 @@ package infrastructure.eduTodo
 
 import cats.effect.IO
 
+import cats.data.NonEmptyList
+
 import doobie.Transactor
 
 import lepus.database.{ DatabaseConfig, DBTransactor, Transact, DatabaseModule }
@@ -11,7 +13,7 @@ import infrastructure.eduTodo.repository.{ CategoryRepository, TaskCategoryRepos
 case class EduTodo(database: DatabaseConfig)(using DBTransactor[IO]) extends DatabaseModule[IO]
 
 object EduTodo:
-  val db: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo", Seq("master", "slave"))
+  val db: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo", NonEmptyList.of("master", "slave"))
 
   given Transact[IO, EduTodo] = EduTodo(db)
 
