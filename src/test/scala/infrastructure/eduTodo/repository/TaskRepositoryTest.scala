@@ -1,5 +1,7 @@
 package infrastructure.eduTodo.repository
 
+import cats.data.NonEmptyList
+
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 
@@ -12,9 +14,9 @@ import infrastructure.eduTodo.EduTodo
 
 class TaskRepositoryTest extends Specification, SpecDatabaseBuilder[IO]:
 
-  val database: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo", Seq("master", "slave"))
+  val database: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo", NonEmptyList.of("master", "slave"))
 
-  given EduTodo = EduTodo(database)
+  given EduTodo = EduTodo(database, "slave")
 
   "TaskRepository Test" should {
     "findAll" in {
