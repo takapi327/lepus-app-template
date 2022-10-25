@@ -13,11 +13,11 @@ case class TaskRepository()(using EduTodo) extends DoobieRepository[IO, EduTodo]
 
   override val table = "todo_task"
 
-  def findAll(): IO[List[Task]] = RunDB("slave") {
+  def findAll(): IO[List[Task]] = RunDB {
     select[Task].query.to[List]
   }
 
-  def get(id: Long): IO[Option[Task]] = RunDB("slave") {
+  def get(id: Long): IO[Option[Task]] = RunDB {
     select[Task].where(fr"id = $id").query.option
   }
 

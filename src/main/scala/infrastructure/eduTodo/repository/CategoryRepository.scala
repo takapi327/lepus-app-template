@@ -17,15 +17,15 @@ case class CategoryRepository()(using EduTodo) extends DoobieRepository[IO, EduT
 
   override val table = "todo_category"
 
-  def findAll(): IO[List[Category]] = RunDB("slave") {
+  def findAll(): IO[List[Category]] = RunDB {
     select[Category].query.to[List]
   }
 
-  def get(id: Long): IO[Option[Category]] = RunDB("slave") {
+  def get(id: Long): IO[Option[Category]] = RunDB {
     select[Category].where(fr"id = $id").query.option
   }
 
-  def filterByIds(ids: NonEmptyList[Long]): IO[Seq[Category]] = RunDB("slave") {
+  def filterByIds(ids: NonEmptyList[Long]): IO[Seq[Category]] = RunDB {
     select[Category].where(in(fr"id", ids))
       .query.to[Seq]
   }

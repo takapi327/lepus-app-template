@@ -17,19 +17,19 @@ case class TaskCategoryRepository()(using EduTodo) extends DoobieRepository[IO, 
 
   override val table = "todo_task_category"
 
-  def get(id: Long): IO[Option[TaskCategory]] = RunDB("slave") {
+  def get(id: Long): IO[Option[TaskCategory]] = RunDB {
     select[TaskCategory].where(fr"id = $id").query.option
   }
 
-  def findByTaskId(taskId: Long): IO[Option[TaskCategory]] = RunDB("slave") {
+  def findByTaskId(taskId: Long): IO[Option[TaskCategory]] = RunDB {
     select[TaskCategory].where(fr"task_id = $taskId").query.option
   }
 
-  def filterByTaskIds(taskIds: NonEmptyList[Long]): IO[List[TaskCategory]] = RunDB("slave") {
+  def filterByTaskIds(taskIds: NonEmptyList[Long]): IO[List[TaskCategory]] = RunDB {
     select[TaskCategory].where(in(fr"task_id", taskIds)).query.to[List]
   }
 
-  def filterByCategoryId(categoryId: Long): IO[Seq[TaskCategory]] = RunDB("slave") {
+  def filterByCategoryId(categoryId: Long): IO[Seq[TaskCategory]] = RunDB {
     select[TaskCategory].where(fr"category_id = $categoryId").query.to[Seq]
   }
 
