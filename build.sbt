@@ -3,8 +3,6 @@ ThisBuild / organization := "com.github.takapi327"
 ThisBuild / scalaVersion := "3.2.0"
 ThisBuild / startYear    := Some(2022)
 
-ThisBuild / resolvers += "Lepus Maven" at "s3://com.github.takapi327.s3-ap-northeast-1.amazonaws.com/lepus/"
-
 lazy val commonSettings = Seq(
   run / fork := true,
 
