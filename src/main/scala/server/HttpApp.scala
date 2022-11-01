@@ -9,6 +9,7 @@ import org.http4s.dsl.io.*
 
 import lepus.router.{ *, given }
 import lepus.server.LepusApp
+import lepus.logger.{ LoggerF, LoggingIO, given }
 import lepus.database.Transact
 
 import infrastructure.databases.eduTodo
@@ -17,7 +18,9 @@ import presentation.controller.*
 
 val id = bindPath[Long]("id")
 
-object HttpApp extends LepusApp[IO]:
+object HttpApp extends LepusApp[IO], LoggingIO[IO]:
+
+  given LoggerF[IO] = logger
 
   override val databases = Set(eduTodo.db)
 
@@ -40,3 +43,7 @@ object HttpApp extends LepusApp[IO]:
       case DELETE => categoryController.delete
     }
   )
+
+  override val errorHandler: PartialFunction[Throwable, IO[Response[IO]]] =
+    case error: Throwable => logger.error(s"Unexpected error: $error", error)
+    .as(Response(Status.InternalServerError))
