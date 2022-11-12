@@ -18,7 +18,7 @@ class TaskService(
 )(using DatabaseModule[IO]):
 
   def getAll: IO[Seq[JsValueTask]] =
-    ((for
+    (for
       taskSeq         <- taskRepository.findAll()
       taskCategorySeq <- NonEmptyList.fromList(taskSeq.flatMap(_.id)) match
         case Some(list) => taskCategoryRepository.filterByTaskIds(list)
@@ -26,10 +26,10 @@ class TaskService(
       categorySeq     <- NonEmptyList.fromList(taskCategorySeq.map(_.categoryId)) match
         case Some(list) => categoryRepository.filterByIds(list)
         case None       => WeakAsyncConnectionIO.pure(List.empty)
-    yield JsValueTask.buildMulti(taskSeq, taskCategorySeq, categorySeq)): ConnectionIO[Seq[JsValueTask]]).transaction
+    yield JsValueTask.buildMulti(taskSeq, taskCategorySeq, categorySeq)).transaction
 
   def get(id: Long): IO[Option[JsValueTask]] =
-    ((for
+    (for
       task            <- taskRepository.get(id)
       taskCategoryOpt <- taskCategoryRepository.findByTaskId(id)
       categoryOpt     <- taskCategoryOpt match
@@ -41,15 +41,15 @@ class TaskService(
       description = v.description,
       state       = v.state,
       category    = categoryOpt.map(JsValueCategory.build)
-    ))): ConnectionIO[Option[JsValueTask]]).transaction
+    ))).transaction
 
   def add(task: JsValuePostTask): IO[Long] =
-    ((for
+    (for
       taskId <- taskRepository.add(Task(None, task.title, task.description))
       _      <- task.categoryId match
         case Some(id) => taskCategoryRepository.add(TaskCategory.create(taskId, id))
         case None     => WeakAsyncConnectionIO.unit
-    yield taskId): ConnectionIO[Long]).transaction("master")
+    yield taskId).transaction("master")
 
   def update(id: Long, params: JsValuePutTask): EitherT[IO, Throwable, Unit] =
     (EitherT.fromOptionF[ConnectionIO, Throwable, Task](taskRepository.get(id), IllegalArgumentException("")) semiflatMap { task =>

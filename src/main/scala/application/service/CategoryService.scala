@@ -16,8 +16,8 @@ class CategoryService(
 )(using DatabaseModule[IO]):
 
   def getAll: IO[Seq[JsValueCategory]] =
-    ((for categories <- categoryRepository.findAll()
-    yield categories.map(JsValueCategory.build)): ConnectionIO[Seq[JsValueCategory]]).transaction
+    (for categories <- categoryRepository.findAll()
+    yield categories.map(JsValueCategory.build)).transaction
 
   def add(category: JsValuePostCategory): IO[Long] =
     categoryRepository.add(Category(None, category.name, category.slug, category.color)).transaction("master")
