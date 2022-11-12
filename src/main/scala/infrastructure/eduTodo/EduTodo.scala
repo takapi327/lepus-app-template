@@ -17,6 +17,6 @@ object EduTodo:
 
   given Transact[IO, EduTodo] = EduTodo(db, "slave")
 
-  val taskRepository:         Transact[IO, TaskRepository]         = new TaskRepository
-  val categoryRepository:     Transact[IO, CategoryRepository]     = new CategoryRepository
-  val taskCategoryRepository: Transact[IO, TaskCategoryRepository] = new TaskCategoryRepository
+  val taskRepository         = new TaskRepository
+  val categoryRepository     = new CategoryRepository
+  val taskCategoryRepository = new TaskCategoryRepository
