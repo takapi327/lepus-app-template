@@ -18,13 +18,13 @@ import presentation.controller.*
 
 val id = bindPath[Long]("id")
 
-object HttpApp extends LepusApp[IO], LoggingIO[IO]:
+object HttpApp extends LepusApp[IO], LoggingIO:
 
   given LoggerF[IO] = logger
 
   override val databases = Set(eduTodo.db)
 
-  override def routes = NonEmptyList.of(
+  override val routes = NonEmptyList.of(
     "tasks" ->> RouterConstructor.of {
       case GET  => taskController.get
       case POST => taskController.post
