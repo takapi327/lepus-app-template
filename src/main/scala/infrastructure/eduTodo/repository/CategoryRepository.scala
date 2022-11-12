@@ -10,38 +10,31 @@ import lepus.database.*
 import lepus.database.implicits.*
 import lepus.logger.given
 
-import infrastructure.eduTodo.EduTodo
 import infrastructure.eduTodo.model.Category
 
-case class CategoryRepository()(using EduTodo) extends DoobieRepository[IO, EduTodo], DoobieQueryHelper, CustomMapping:
+class CategoryRepository extends DoobieQueryHelper, DoobieLogHandler, CustomMapping:
 
   override val table = "todo_category"
 
-  def findAll(): IO[List[Category]] = RunDB {
+  def findAll(): ConnectionIO[List[Category]] =
     select[Category].query.to[List]
-  }
 
-  def get(id: Long): IO[Option[Category]] = RunDB {
-    select[Category].where(fr"id = $id").query.option
-  }
+  def get(id: Long): ConnectionIO[Option[Category]] =
+  select[Category].where(fr"id = $id").query.option
 
-  def filterByIds(ids: NonEmptyList[Long]): IO[Seq[Category]] = RunDB {
+  def filterByIds(ids: NonEmptyList[Long]): ConnectionIO[Seq[Category]] =
     select[Category].where(in(fr"id", ids))
       .query.to[Seq]
-  }
 
-  def add(data: Category): IO[Long] = RunDB("master") {
+  def add(data: Category): ConnectionIO[Long] =
     insert[Category].values(fr"${data.id}, ${data.name}, ${data.slug}, ${data.color.toHexString}")
       .update
       .withUniqueGeneratedKeys[Long]("id")
-  }
 
-  def update(data: Category): IO[Int] = RunDB("master") {
+  def update(data: Category): ConnectionIO[Int] =
     update[Category](fr"name=${data.name}, slug=${data.slug}, color=${data.color.toHexString}")
       .where(fr"id=${data.id}")
       .updateRun
-  }
 
-  def delete(id: Long): IO[Int] = RunDB("master") {
+  def delete(id: Long): ConnectionIO[Int] =
     delete[Category].where(fr"id = $id").updateRun
-  }
