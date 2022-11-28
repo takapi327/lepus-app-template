@@ -10,7 +10,6 @@ import org.http4s.dsl.io.*
 import lepus.router.{ *, given }
 import lepus.server.LepusApp
 import lepus.logger.{ LoggerF, LoggingIO, given }
-import lepus.database.Transact
 
 import infrastructure.databases.eduTodo
 

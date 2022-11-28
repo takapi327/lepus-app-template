@@ -2,10 +2,10 @@ package presentation
 
 import cats.effect.IO
 
-import lepus.database.Transact
+import lepus.doobie.Transact
 
 import application.service.*
 
 package object controller:
-  val taskController: Transact[IO, TaskController] = TaskController(taskService)
-  val categoryController: Transact[IO, CategoryController] = CategoryController(categoryService)
+  val taskController: Transact[TaskController] = TaskController(taskService)
+  val categoryController: Transact[CategoryController] = CategoryController(categoryService)
