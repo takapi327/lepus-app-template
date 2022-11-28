@@ -1,22 +1,14 @@
 package infrastructure.eduTodo
 
-import cats.effect.IO
-
-import cats.data.NonEmptyList
+import javax.inject.Singleton
 
 import lepus.database.DatabaseConfig
-import lepus.hikari.HikariContext
-import lepus.doobie.*
+import lepus.doobie.DatabaseModule
 
-import infrastructure.eduTodo.repository.*
+@Singleton
+class Master extends DatabaseModule:
+  val databaseConfig: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo/master")
 
-case class EduTodo(database: DatabaseConfig, defaultDB: String)(using HikariContext) extends DatabaseModule[IO]
-
-object EduTodo:
-  val db: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo", NonEmptyList.of("master", "slave"))
-
-  given Transact[EduTodo] = EduTodo(db, "slave")
-
-  val taskRepository         = new TaskRepository
-  val categoryRepository     = new CategoryRepository
-  val taskCategoryRepository = new TaskCategoryRepository
+@Singleton
+class Slave extends DatabaseModule:
+  val databaseConfig: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo/slave")
