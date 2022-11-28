@@ -7,16 +7,16 @@ import cats.effect.unsafe.implicits.global
 
 import org.specs2.mutable.Specification
 
-import lepus.database.{ DataSource, DatabaseConfig }
+import lepus.database.DatabaseConfig
 import lepus.doobie.*
+import lepus.doobie.implicits.*
 import lepus.doobie.specs2.*
 
-import infrastructure.eduTodo.EduTodo
 import infrastructure.eduTodo.model.Task
 
 class TaskRepositoryTest extends SQLSpecification:
 
-  def dataSource: DataSource = DataSource("lepus.database", "edu_todo", "master")
+  def databaseConfig: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo/master")
 
   val taskRepository = new TaskRepository
 
@@ -45,36 +45,36 @@ class TaskRepositoryTest extends SQLSpecification:
 
 class TaskRepositoryDBAccessTest extends Specification, DBAccessSpecification[IO]:
 
-  val database: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo", NonEmptyList.of("master", "slave"))
+  val database: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo/master")
 
   val taskRepository = new TaskRepository
 
   "TaskRepository Test" should {
 
     "Check findAll database access" in {
-      val result = taskRepository.findAll().rollbackTransact("slave").unsafeRunSync()
+      val result = taskRepository.findAll().transact(rollbackTransactor).unsafeRunSync()
       result.length === 3
     }
 
     "Check get database access" in {
-      val result: Option[Task] = taskRepository.get(1L).rollbackTransact("slave").unsafeRunSync()
+      val result: Option[Task] = taskRepository.get(1L).transact(rollbackTransactor).unsafeRunSync()
       result.nonEmpty
     }
 
     "Check add sql format" in {
       val task = Task(None, "new Task", None, Task.Status.TODO)
-      val result = taskRepository.add(task).rollbackTransact("master").unsafeRunSync()
+      val result = taskRepository.add(task).transact(rollbackTransactor).unsafeRunSync()
       result > 0
     }
 
     "Check update database access" in {
       val task = Task(Some(1), "Task 1 Updated", None, Task.Status.TODO)
-      val result = taskRepository.update(task).rollbackTransact("master").unsafeRunSync()
+      val result = taskRepository.update(task).transact(rollbackTransactor).unsafeRunSync()
       result === 1
     }
 
     "Check delete database access" in {
-      val result = taskRepository.delete(1L).rollbackTransact("slave").unsafeRunSync()
+      val result = taskRepository.delete(1L).transact(rollbackTransactor).unsafeRunSync()
       result === 1
     }
   }
