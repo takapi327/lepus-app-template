@@ -7,8 +7,9 @@ import cats.effect.unsafe.implicits.global
 
 import org.specs2.mutable.Specification
 
-import lepus.database.*
-import lepus.database.specs2.*
+import lepus.database.{ DataSource, DatabaseConfig }
+import lepus.doobie.*
+import lepus.doobie.specs2.*
 
 import infrastructure.eduTodo.EduTodo
 import infrastructure.eduTodo.model.Task
