@@ -23,6 +23,7 @@ lazy val root = (project in file("."))
   .settings(commonSettings: _*)
   .settings(libraryDependencies ++= Seq(
     "org.http4s" %% "http4s-circe" % "0.23.16",
-    "mysql" % "mysql-connector-java" % "8.0.30"
+    "mysql" % "mysql-connector-java" % "8.0.30",
+    lepusDoobie
   ))
   .enablePlugins(Lepus)
