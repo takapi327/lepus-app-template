@@ -4,8 +4,8 @@ import cats.effect.IO
 
 import cats.data.EitherT
 
-import lepus.database.*
-import lepus.database.implicits.*
+import lepus.doobie.*
+import lepus.doobie.implicits.*
 
 import application.model.{ JsValueCategory, JsValuePostCategory, JsValuePutCategory }
 import infrastructure.eduTodo.model.Category

@@ -4,8 +4,8 @@ import cats.effect.IO
 
 import cats.data.{ EitherT, NonEmptyList }
 
-import lepus.database.*
-import lepus.database.implicits.*
+import lepus.doobie.*
+import lepus.doobie.implicits.*
 
 import application.model.{ JsValueCategory, JsValuePostTask, JsValuePutTask, JsValueTask }
 import infrastructure.eduTodo.model.{ Category, Task, TaskCategory }
@@ -57,7 +57,7 @@ class TaskService(
         title       = params.title,
         description = params.description,
         state       = params.state
-      )).map(_ => task)
+      )).as(task)
     } flatMap(task => updateTaskCategory(task, params))).transaction("master")
 
   def delete(id: Long): IO[Int] = taskRepository.delete(id).transaction("master")
@@ -66,12 +66,11 @@ class TaskService(
     (params.categoryId match {
       case Some(cid) => EitherT.fromOptionF[ConnectionIO, Throwable, Category](categoryRepository.get(cid), IllegalArgumentException(s"Category with id $cid does not exist")).map(_ => ())
       case None      => EitherT.pure[ConnectionIO, Throwable](())
-    }) semiflatMap { _ => for
-      taskCategoryOpt <- taskCategoryRepository.findByTaskId(task.id.get)
-      _               <- (params.categoryId, taskCategoryOpt, params.categoryId != taskCategoryOpt.map(_.categoryId)) match {
-        case (Some(cid), None,      true)  => taskCategoryRepository.add(TaskCategory.create(task.id.get, cid)).map(_ => None)
-        case (Some(cid), Some(old), true)  => taskCategoryRepository.update(old.copy(categoryId = cid))
-        case (None,      Some(_),   _)     => taskCategoryRepository.deleteByTaskId(task.id.get)
-        case _                             => WeakAsyncConnectionIO.pure(None)
+    }) semiflatMap { _ => taskCategoryRepository.findByTaskId(task.id.get).flatMap(taskCategoryOpt => {
+      (params.categoryId, taskCategoryOpt, params.categoryId != taskCategoryOpt.map(_.categoryId)) match {
+        case (Some(cid), None,      true)  => taskCategoryRepository.add(TaskCategory.create(task.id.get, cid)).void
+        case (Some(cid), Some(old), true)  => taskCategoryRepository.update(old.copy(categoryId = cid)).void
+        case (None,      Some(_),   _)     => taskCategoryRepository.deleteByTaskId(task.id.get).void
+        case _                             => WeakAsyncConnectionIO.unit
       }
-    yield ()}
+    })}
