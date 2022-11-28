@@ -1,5 +1,9 @@
 package presentation.controller
 
+import javax.inject.{ Inject, Singleton }
+
+import com.google.inject.Injector
+
 import cats.effect.IO
 
 import io.circe.syntax.*
@@ -9,10 +13,13 @@ import org.http4s.circe.*
 import org.http4s.circe.CirceEntityDecoder.*
 import org.http4s.dsl.io.*
 
+import lepus.guice.inject.Inject as LepusInject
+
 import application.model.{ JsValueCategory, JsValuePostCategory, JsValuePutCategory }
 import application.service.CategoryService
 
-class CategoryController(categoryService: CategoryService):
+@Singleton
+class CategoryController @Inject()(categoryService: CategoryService):
 
   def get: IO[Response[IO]] =
     for
@@ -37,3 +44,6 @@ class CategoryController(categoryService: CategoryService):
     yield res
 
   def delete(using id: Long): IO[Response[IO]] = categoryService.delete(id) >> Ok("Success")
+
+object CategoryController:
+  def apply(): Injector ?=> CategoryController = LepusInject[CategoryController]

@@ -1,5 +1,9 @@
 package presentation.controller
 
+import javax.inject.{ Inject, Singleton }
+
+import com.google.inject.Injector
+
 import cats.effect.IO
 
 import io.circe.syntax.*
@@ -9,10 +13,13 @@ import org.http4s.circe.*
 import org.http4s.circe.CirceEntityDecoder.*
 import org.http4s.dsl.io.*
 
+import lepus.guice.inject.Inject as LepusInject
+
 import application.model.{ JsValuePostTask, JsValuePutTask }
 import application.service.TaskService
 
-class TaskController(taskService: TaskService):
+@Singleton
+class TaskController @Inject()(taskService: TaskService):
   def get: IO[Response[IO]] =
     for
       tasks <- taskService.getAll
@@ -44,3 +51,6 @@ class TaskController(taskService: TaskService):
     yield res
 
   def delete(using id: Long): IO[Response[IO]] = taskService.delete(id) >> Ok("Success")
+
+object TaskController:
+  def apply(): Injector ?=> TaskController = LepusInject[TaskController]
