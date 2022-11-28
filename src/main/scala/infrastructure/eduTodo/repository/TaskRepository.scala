@@ -1,5 +1,7 @@
 package infrastructure.eduTodo.repository
 
+import javax.inject.Singleton
+
 import cats.effect.IO
 
 import lepus.doobie.*
@@ -8,6 +10,7 @@ import lepus.logger.given
 
 import infrastructure.eduTodo.model.Task
 
+@Singleton
 class TaskRepository extends DoobieQueryHelper, DoobieLogHandler, CustomMapping:
 
   override val table = "todo_task"

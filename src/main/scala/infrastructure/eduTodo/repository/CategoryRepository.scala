@@ -1,5 +1,7 @@
 package infrastructure.eduTodo.repository
 
+import javax.inject.Singleton
+
 import cats.data.NonEmptyList
 
 import cats.effect.IO
@@ -12,6 +14,7 @@ import lepus.logger.given
 
 import infrastructure.eduTodo.model.Category
 
+@Singleton
 class CategoryRepository extends DoobieQueryHelper, DoobieLogHandler, CustomMapping:
 
   override val table = "todo_category"
