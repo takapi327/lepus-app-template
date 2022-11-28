@@ -6,8 +6,8 @@ import cats.effect.IO
 
 import doobie.util.fragments.in
 
-import lepus.database.*
-import lepus.database.implicits.*
+import lepus.doobie.*
+import lepus.doobie.implicits.*
 import lepus.logger.given
 
 import infrastructure.eduTodo.model.Category
@@ -20,7 +20,7 @@ class CategoryRepository extends DoobieQueryHelper, DoobieLogHandler, CustomMapp
     select[Category].query.to[List]
 
   def get(id: Long): ConnectionIO[Option[Category]] =
-  select[Category].where(fr"id = $id").query.option
+    select[Category].where(fr"id = $id").query.option
 
   def filterByIds(ids: NonEmptyList[Long]): ConnectionIO[Seq[Category]] =
     select[Category].where(in(fr"id", ids))

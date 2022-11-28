@@ -6,8 +6,8 @@ import cats.effect.IO
 
 import doobie.util.fragments.in
 
-import lepus.database.*
-import lepus.database.implicits.*
+import lepus.doobie.*
+import lepus.doobie.implicits.*
 import lepus.logger.given
 
 import infrastructure.eduTodo.model.TaskCategory

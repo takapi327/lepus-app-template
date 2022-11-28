@@ -1,6 +1,6 @@
 package infrastructure.eduTodo.repository
 
-import lepus.database.Meta
+import lepus.doobie.Meta
 import infrastructure.eduTodo.model.{Category, Task}
 
 trait CustomMapping:

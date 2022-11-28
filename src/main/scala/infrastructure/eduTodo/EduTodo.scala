@@ -4,18 +4,18 @@ import cats.effect.IO
 
 import cats.data.NonEmptyList
 
-import doobie.Transactor
-
-import lepus.database.{ DatabaseConfig, DBTransactor, Transact, DatabaseModule }
+import lepus.database.DatabaseConfig
+import lepus.hikari.HikariContext
+import lepus.doobie.*
 
 import infrastructure.eduTodo.repository.*
 
-case class EduTodo(database: DatabaseConfig, defaultDB: String)(using DBTransactor[IO]) extends DatabaseModule[IO]
+case class EduTodo(database: DatabaseConfig, defaultDB: String)(using HikariContext) extends DatabaseModule[IO]
 
 object EduTodo:
   val db: DatabaseConfig = DatabaseConfig("lepus.database://edu_todo", NonEmptyList.of("master", "slave"))
 
-  given Transact[IO, EduTodo] = EduTodo(db, "slave")
+  given Transact[EduTodo] = EduTodo(db, "slave")
 
   val taskRepository         = new TaskRepository
   val categoryRepository     = new CategoryRepository
