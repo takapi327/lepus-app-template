@@ -34,7 +34,7 @@ class TaskController @Inject()(taskService: TaskService):
       res  <- Ok("Success")
     yield res
 
-  def getById(using id: Long): IO[Response[IO]] =
+  def getById(id: Long): IO[Response[IO]] =
     for
       taskOpt <- taskService.get(id)
       res     <- taskOpt match
@@ -42,7 +42,7 @@ class TaskController @Inject()(taskService: TaskService):
         case None       => NotFound(s"ID: No Task matching $id exists")
     yield res
 
-  def put(using id: Long)(using request: Request[IO]): IO[Response[IO]] =
+  def put(id: Long)(using request: Request[IO]): IO[Response[IO]] =
     given EntityDecoder[IO, JsValuePutTask] = circeEntityDecoder[IO, JsValuePutTask]
     for
       put <- request.as[JsValuePutTask]
@@ -50,7 +50,7 @@ class TaskController @Inject()(taskService: TaskService):
       res <- Ok("Success")
     yield res
 
-  def delete(using id: Long): IO[Response[IO]] = taskService.delete(id) >> Ok("Success")
+  def delete(id: Long): IO[Response[IO]] = taskService.delete(id) >> Ok("Success")
 
 object TaskController:
   def apply(): Injector ?=> TaskController = LepusInject[TaskController]
