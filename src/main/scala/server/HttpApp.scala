@@ -12,7 +12,7 @@ import org.http4s.*
 import org.http4s.dsl.io.*
 import org.http4s.server.Router
 
-import lepus.server.LepusApp
+import lepus.app.LepusApp
 import lepus.logger.{ LoggerF, LoggingIO, given }
 
 import presentation.controller.*
@@ -47,7 +47,7 @@ object HttpApp extends LepusApp[IO], LoggingIO:
     }
   }
 
-  override val routes = Router(
+  override val router = Router(
     "/" -> (taskRoutes <+> categoryRoutes)
   ).orNotFound
 
