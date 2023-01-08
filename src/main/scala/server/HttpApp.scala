@@ -49,7 +49,7 @@ object HttpApp extends LepusApp[IO], LoggingIO:
 
   override val router = Router(
     "/" -> (taskRoutes <+> categoryRoutes)
-  ).orNotFound
+  )
 
   override val errorHandler: PartialFunction[Throwable, IO[Response[IO]]] =
     case error: Throwable => logger.error(s"Unexpected error: $error", error)
